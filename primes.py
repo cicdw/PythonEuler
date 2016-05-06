@@ -52,14 +52,18 @@ def list_primes_below(n):
     elif n==2:
         return [2]
 
-    sieve = [2]
-    sieve.extend(range(3,n+1,2))
-    for base in sieve:
-        if 2*base > n+1:
-            return sieve
+    sieve = [True]*(n+1) # will treat index as actual number
+    sieve[0], sieve[1] = False, False # just for my sanity
 
-        for num in range(2*base, n+1, base):
-                try:
-                    sieve.remove(num)
-                except ValueError:
-                    pass
+    def filter_out(num):
+        '''Filters out all multiples of num.'''
+        for div in range(2*num, n+1, num):
+            sieve[div] = False
+
+    res = []
+    for base in range(2,n+1):
+        if sieve[base]:
+            filter_out(base)
+            res.append(base)
+
+    return res
